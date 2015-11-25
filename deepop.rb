@@ -1,58 +1,65 @@
-# This method performs a block or method on every element of a nested array
 
-class Array
+module Enumerable
+
+  #Extentions for mixed data structures consisting of nested Arrays and Hashes
+
+  # Like #each, but it loops through every Array and Hash in a nested Array/Hash data structure
+  def each_deep
+    deep =->(x){
+      if not Enumerable === x
+        yield x
+      else
+        x.each do |element|
+          case x
+          when Array
+            deep.call(element)
+          when Hash
+            deep.call(element[1])
+          end
+        end
+      end
+    }
+    deep.call(self)
+  end
 
 
-def deepop(*method,&block)
-  callable = method
-  callable ||= block
-  callable ||= ->(x){x}
- 
-  inner_deepop= ->(x){
-    if x.kind_of? Array
-      x.inject([]){|result,element| result << inner_deepop.call(element)}
-    else
-      return callable.call(x)
-    end
-  }
+  # Like #map, but it maps every element in a nested Hash/Array data structure.
+  # For an Array is maps the elements and for a Hash it maps the values
+  def map_deep
+    deep =->(x){
+      if not Enumerable === x
+        yield x
+      else
+          case x
+          when Array
+            x.map{|e| deep.call(e)}
+          when Hash
+            h={}
+            x.each do |key,value|
+              h[key] = deep.call(value)
+            end
+            h
+          end
+      end
+    }
+    deep.call(self)
+  end
 
-  inner_deepop.call(self)
+  # Like #flatten, but it also flattens Hashes inside a nested Hash/Array data structure.
+  # The values of Hashes are pushed into the output array and the keys are discarded
+  def flatten_deep
+    out = []
+    self.each_deep{|x| out << x}
+    out
+  end
 
 end
 
 
 
- def dodeep(&block)
-   @block = block
-   def inner_deepop(x)
-     if x.class == Array   
-       inner_array = [] 
-       x.each do |element|
-        inner_array << inner_deepop(element)
-       end
-       return inner_array
-     else
-       return @block.call(x)
-     end
-   end
-   inner_deepop(self)
- end
+# DEMO
+# data_structure = [1,2,[31,32],4,[{a:51,b:52,c:[531,532,[5331,5332]]},{a:54,b:55}]]
 
-end
-
-
-
-
-# Examples
-
-a = [1,2,3,5,[7,9],[11,13,15,[21,23]]]
-
-def hello(x)
-"hello"+x.to_s
-end
-
-h = method(:hello)
-
-p a.deepop(h)
-p ""
-p a.deepop{|x| x*100}
+# data_structure.each_deep{|x| puts x}
+# puts data_structure.map_deep{|x| x*10}.inspect
+# puts data_structure.flatten_deep.inspect
