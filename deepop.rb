@@ -47,7 +47,7 @@ module Enumerable
 
   # Like #flatten, but it also flattens Hashes inside a nested Hash/Array data structure.
   # The values of Hashes are pushed into the output array and the keys are discarded
-  def flatten_deep
+  def trample
     out = []
     self.each_deep{|x| out << x}
     out
@@ -57,9 +57,9 @@ end
 
 
 
-# DEMO
-# data_structure = [1,2,[31,32],4,[{a:51,b:52,c:[531,532,[5331,5332]]},{a:54,b:55}]]
+ ##DEMO
+ #data_structure = [1,2,[31,32],4,[{a:51,b:52,c:[531,532,[5331,5332]]},{a:54,b:55}]]
 
-# data_structure.each_deep{|x| puts x}
-# puts data_structure.map_deep{|x| x*10}.inspect
-# puts data_structure.flatten_deep.inspect
+ #data_structure.each_deep{|x| puts x}
+ #puts data_structure.map_deep{|x| x*10}.inspect
+ #puts data_structure.trample.inspect
