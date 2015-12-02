@@ -11,16 +11,16 @@ module Enumerable
         x.each do |element|
           case x
           when Array
-            deep.call(element)
+            deep.(element)
           when Hash
-            deep.call(element[1])
+            deep.(element[1])
           end
         end
       else
         yield x
       end
     }
-    deep.call(self)
+    deep.(self)
   end
 
 
@@ -30,14 +30,14 @@ module Enumerable
     deep =->(x){
       case x
       when Array
-        x.map{|e| deep.call(e)}
+        x.map{|e| deep.(e)}
       when Hash
-        x.merge(x){|key,val| deep.call(val)}
+        x.merge(x){|key,val| deep.(val)}
       else
         yield x
       end
     }
-    deep.call(self)
+    deep.(self)
   end
 
   # Like #flatten, but it also flattens Hashes inside a nested Hash/Array data structure.
@@ -58,10 +58,10 @@ end
 
 
 
- # #DEMO
- # data_structure = [1,2,[31,32],4,[{a:51,b:52,c:[531,532,[5331,5332]]},{a:54,b:55}]]
+ #DEMO
+ data_structure = [1,2,[31,32],4,[{a:51,b:52,c:[531,532,[5331,5332]]},{a:54,b:55}]]
 
- # data_structure.each_deep{|x| puts x}
- # puts data_structure.map_deep{|x| x*10}.inspect
- # puts data_structure.trample.inspect
- # puts data_structure.include_deep?(5332)
+ data_structure.each_deep{|x| puts x}
+ puts data_structure.map_deep{|x| x*10}.inspect
+ puts data_structure.trample.inspect
+ puts data_structure.include_deep?(5332)
