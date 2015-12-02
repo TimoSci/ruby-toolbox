@@ -40,7 +40,6 @@ module Enumerable
     deep.call(self)
   end
 
-
   # Like #flatten, but it also flattens Hashes inside a nested Hash/Array data structure.
   # The values of Hashes are pushed into the output array and the keys are discarded
   def trample
@@ -48,6 +47,12 @@ module Enumerable
     self.each_deep{|x| out << x}
     out
   end
+
+  # Like #include, but it searches through all Array elements and Hash values.
+  def include_deep?(input)
+    self.each_deep{|x| return true if x == input}
+    return false
+  end  
 
 end
 
@@ -59,3 +64,4 @@ end
  # data_structure.each_deep{|x| puts x}
  # puts data_structure.map_deep{|x| x*10}.inspect
  # puts data_structure.trample.inspect
+ # puts data_structure.include_deep?(5332)
