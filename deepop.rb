@@ -30,7 +30,7 @@ module Enumerable
     deep =->(x){
       case x
       when Enumerable
-        x.map_any{|e| deep.(e)}
+        x.map_values{|e| deep.(e)}
       else
         yield x
       end
@@ -39,7 +39,7 @@ module Enumerable
   end
 
   # A #map that works both for Arrays and Hashes. For Hashes it keeps the original keys.
-  def map_any
+  def map_values
     case self
     when Array
       self.map{|x| yield x}
