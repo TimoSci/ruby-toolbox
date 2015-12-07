@@ -29,16 +29,27 @@ module Enumerable
   def map_deep
     deep =->(x){
       case x
-      when Array
-        x.map{|e| deep.(e)}
-      when Hash
-        x.merge(x){|key,val| deep.(val)}
+      when Enumerable
+        x.map_any{|e| deep.(e)}
       else
         yield x
       end
     }
     deep.(self)
   end
+
+  # A #map that works both for Arrays and Hashes. For Hashes it keeps the original keys.
+  def map_any
+    case self
+    when Array
+      self.map{|x| yield x}
+    when Hash
+      self.merge(self){|_k,v| yield v}
+    else
+      nil
+    end
+  end
+
 
   # Like #flatten, but it also flattens Hashes inside a nested Hash/Array data structure.
   # The values of Hashes are pushed into the output array and the keys are discarded
@@ -52,7 +63,7 @@ module Enumerable
   def include_deep?(input)
     self.each_deep{|x| return true if x == input}
     return false
-  end  
+  end
 
 end
 
