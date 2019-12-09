@@ -25,7 +25,7 @@ module HashFunctions
   ## For hashing strings or arrays of integers
   #==========================================
   #
-  def polyhash_string(prime:p,x:x)
+  def polyhash_string(prime:p,x:)
     # Creates a hash function from the polynomial family with base parameter x and modulus p(prime)
     ->(string){
       result = 0
@@ -55,26 +55,17 @@ module HashFunctions
     }
   end
 
-  # def polyhash_accumulator(collection_item,converter,acc)
-  #    acc += (converter.(char)*x_to_i)%prime
-  #    x_to_i = (x_to_i*x)%prime
-  #    acc
-  # end
-
   def polyhash_slow(p,x)
     ->(string){
       string.map.with_index{|char,i| (char*x**i)%p }.reduce(&:+)%p
     }
   end
 
+
   def polyhash_recursive(pattern_size: ,text:, prime: , x: )
-    #returns h[i]
-    # i is the position of text before the hash in front
     exponentiation = modular_exponentiation(x,pattern_size,prime)
-    # exponentiation = (x**pl)%p
     ->(i,h){
-        # (h*x - text[i+pl]*exponentiation + text[i])%p
-        (h*x - text[i+pattern_size].ord*exponentiation + text[i].ord)%prime
+        (h*x%prime - text[i+pattern_size].ord*exponentiation%prime + text[i].ord%prime)%prime
       }
   end
 
@@ -86,7 +77,6 @@ module HashFunctions
       return n if Prime.prime? n
     end
   end
-
 
   def modular_exponentiation(base, exponent, modulus)
     return 0 if modulus == 1
