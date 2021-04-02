@@ -127,20 +127,26 @@ class SplayTreeVertex < Vertex
     r
   end
 
-  def split
-    splay
-    r = right
-    self.right = nil
-    r.parent = nil
-    [self,r]
-  end
-
   def remove_root_largest
     l = left
     l.parent = nil
     clear
     l
   end
+
+  #
+  # split and merge
+  #
+
+  def split
+    splay
+    return [self,nil] unless right
+    r = right
+    self.right = nil
+    r.parent = nil
+    [self,r]
+  end
+
 
 end
 
