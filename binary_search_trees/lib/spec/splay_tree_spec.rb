@@ -5,6 +5,8 @@ require_relative '../splay_tree.rb'
 
 describe SplayTreeVertex do
 
+
+
   it 'should preserve a BST for a known example after small_rotation operations' do
 
       vertex = SplayTreeVertex.new(4)
@@ -59,6 +61,27 @@ describe SplayTreeVertex do
     stress_test_delete
   end
 
+  it 'should pass a stress test for a split operations' do
+    tree_size = 100
+    sample_space_size = 200
+    l = 100
+
+    l.times do
+      vertex = generate_random_tree(rand(tree_size)+1,sample_space_size)
+      i = rand(sample_space_size)
+      old_in = vertex.to_inorder
+      v1,v2 = vertex.find(i).split
+      if v2
+        inorder2 = v2.to_inorder
+        pp inorder2
+      else
+        inorder2 = []
+      end
+      expect(old_in).to eq v1.to_inorder+inorder2
+    end
+
+  end
+
 end
 
 
@@ -66,7 +89,7 @@ def stress_test(method,condition: ->(v){v.parent},arguments:nil)
 
   tree_size = 100
   sample_space_size = 200
-  l = 100
+  l = 10
   j = 100
 
   l.times do
@@ -105,7 +128,7 @@ def stress_test_insert
 
   tree_size = 100
   sample_space_size = 200
-  l = 100
+  l = 10
   j = 100
 
   l.times do
@@ -142,7 +165,7 @@ def stress_test_delete
 
   tree_size = 100
   sample_space_size = 200
-  l = 100
+  l = 10
   j = 100
 
   l.times do
@@ -162,7 +185,6 @@ def stress_test_delete
         old_in = vertex.to_inorder
 
         vertex = v.splay_delete
-        pp vertex.size
 
         new_pre = vertex.to_preorder
         new_post = vertex.to_postorder
